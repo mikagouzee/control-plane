@@ -110,6 +110,11 @@ resource "azurerm_storage_account" "storage" {
   }
 }
 
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "azurerm_linux_virtual_machine" "linuxvm" {
     name = var.linux_virtual_machine_name
     location = azurerm_resource_group.rg.location
@@ -135,7 +140,7 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
 
     admin_ssh_key {
       username = "azureuser"
-      public_key = file("./keys/key.pub")
+      public_key = tls_private_key.ssh_key.public_key_openssh
     }
 
     boot_diagnostics {
@@ -149,7 +154,7 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
     connection {
       type     = "ssh"
       user     = "azureuser"
-      private_key = file("./keys/key.pem")
+      private_key = tls_private_key.ssh_key.private_key_openssh
       host     = self.public_ip_address
     }
   
