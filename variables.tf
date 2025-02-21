@@ -48,4 +48,5 @@ variable "linux_virtual_machine_name" {
 
 variable "gitsource" {
   type = string
+  default = "https://github.com/mikagouzee/control-plane"
 }
