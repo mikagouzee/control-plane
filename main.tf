@@ -35,6 +35,11 @@ resource "azurerm_public_ip" "public_ip" {
   }
 }
 
+data "azurerm_public_ip" "controlIP" {
+  name = azurerm_public_ip.public_ip.name
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
 resource "azurerm_network_security_group" "nsg" {
   name                = var.netwok_security_group_name
   location            = azurerm_resource_group.rg.location
@@ -92,24 +97,6 @@ resource "azurerm_network_interface_security_group_association" "association" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-resource "random_id" "randomId" {
-  keepers = {
-    resource_group = azurerm_resource_group.rg.name
-  }
-  byte_length = 8
-}
-
-resource "azurerm_storage_account" "storage" {
-  name                     = "diag${random_id.randomId.hex}"
-  resource_group_name      = azurerm_resource_group.rg.name
-  location                 = azurerm_resource_group.rg.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  tags = {
-    environment = "production"
-  }
-}
-
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -132,6 +119,10 @@ resource "azurerm_linux_virtual_machine" "controlnode" {
     storage_account_type = "Premium_LRS"
   }
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
@@ -142,10 +133,6 @@ resource "azurerm_linux_virtual_machine" "controlnode" {
   admin_ssh_key {
     username   = "azureuser"
     public_key = tls_private_key.ssh_key.public_key_openssh
-  }
-
-  boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.storage.primary_blob_endpoint
   }
 
   tags = {

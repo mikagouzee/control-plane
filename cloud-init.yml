@@ -3,12 +3,25 @@ runcmd:
   - echo "install terraform from cloud-init!"
   - apt-get update
   - apt-get install -y unzip curl
-  - curl -O https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-  - unzip terraform_1.0.0_linux_amd64.zip
+  - curl -O https://releases.hashicorp.com/terraform/1.10.5/terraform_1.10.5_linux_amd64.zip
+  - unzip terraform_1.10.5_linux_amd64.zip
   - mv terraform /usr/local/bin/
-  - rm terraform_1.0.0_linux_amd64.zip
-  - apt-get install -y ansible
-  - apt-get install -y git
-  - git clone https://github.com/mikagouzee/ehealth-terraform.git ./ehealth-terraform
-  - cd ./ehealth-terraform && terraform init && terraform apply
-  
+  - rm terraform_1.10.5_linux_amd64.zip
+
+  #install ansible and git and download the scripts and playbook
+  - apt-get install -y ansible git
+  - git clone https://github.com/mikagouzee/ehealth-terraform.git /home/azureuser/ehealth-terraform
+  - chown -R azureuser:azureuser /home/azureuser/ehealth-terraform
+  - git clone https://github.com/mikagouzee/ehealth-ansible.git /home/azureuser/ehealth-ansible
+  - chown -R azureuser:azureuser /home/azureuser/ehealth-ansible
+    
+  #install the azure cli
+  - sudo apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg
+  - curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+  - AZ_REPO=$(lsb_release -cs)
+  - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+  - sudo apt-get update
+  - sudo apt-get install -y azure-cli
+  - az login --identity --allow-no-subscriptions
+
+  # - cd ~/ehealth-terraform && terraform init && terraform apply
