@@ -45,6 +45,7 @@ resource "azurerm_network_security_group" "nsg" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
+ // allows SSH
   security_rule {
     name                       = "SSH"
     priority                   = 1001
@@ -57,6 +58,7 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 
+// allows http on port 80
   security_rule {
     name                       = "HTTP"
     priority                   = 1002
@@ -69,9 +71,19 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 
-  tags = {
-    environment = "production"
+// opens port 8080 for jenkins
+    security_rule {
+    name                       = "JENKINS"
+    priority                   = 1003
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8080"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
+
 }
 
 resource "azurerm_network_interface" "nic" {
@@ -86,9 +98,6 @@ resource "azurerm_network_interface" "nic" {
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 
-  tags = {
-    environment = "production"
-  }
 
 }
 
@@ -133,10 +142,6 @@ resource "azurerm_linux_virtual_machine" "controlnode" {
   admin_ssh_key {
     username   = "azureuser"
     public_key = tls_private_key.ssh_key.public_key_openssh
-  }
-
-  tags = {
-    environment = "production"
   }
   
 }
