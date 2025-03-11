@@ -39,4 +39,4 @@ runcmd:
   - sudo systemctl enable jenkins
 
   - git clone https://github.com/mikagouzee/ehealth-terraform.git /home/azureuser/ehealth-iac
-  - git clone https://github.com/mikagouzee/controlplane && mv ./controlplane/scripts/subscription_feed.sh subscription.sh && bash subscription.sh
+  - git clone https://github.com/mikagouzee/controlplane.git && mv ./controlplane/scripts/subscription_feed.sh subscription.sh && bash subscription.sh
