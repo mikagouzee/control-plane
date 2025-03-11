@@ -16,10 +16,6 @@ runcmd:
   #install ansible and git and download the scripts and playbook
   - echo "Installing Ansible"
   - apt-get install -y ansible git
-  # - git clone https://github.com/mikagouzee/ehealth-terraform.git /home/azureuser/ehealth-terraform
-  # - chown -R azureuser:azureuser /home/azureuser/ehealth-terraform
-  # - git clone https://github.com/mikagouzee/ehealth-ansible.git /home/azureuser/ehealth-ansible
-  # - chown -R azureuser:azureuser /home/azureuser/ehealth-ansible
     
   #install the azure cli
   - echo "Installing Azure CLI"
@@ -41,3 +37,6 @@ runcmd:
   - sudo apt install jenkins -y
   - sudo systemctl start jenkins
   - sudo systemctl enable jenkins
+
+  - git clone https://github.com/mikagouzee/ehealth-terraform.git /home/azureuser/ehealth-iac
+  - git clone https://github.com/mikagouzee/controlplane && mv ./controlplane/scripts/subscription_feed.sh subscription.sh && bash subscription.sh
