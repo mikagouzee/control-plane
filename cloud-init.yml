@@ -1,9 +1,4 @@
 #cloud-config
-write_files:
-  - path: /tmp/myconfig.txt
-    content: |
-      PARAM1: ${customdata.param1}
-
 runcmd:
   - echo "Installing Terraform"
   - apt-get update
@@ -25,9 +20,7 @@ runcmd:
   - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
   - sudo apt-get update
   - sudo apt-get install -y azure-cli
-  # - az login --identity ${customdata.param1}
-
-  # - cd ~/ehealth-terraform && terraform init && terraform apply
+  
   - echo "Installing Jenkins"
   - sudo apt update -y
   - sudo apt install openjdk-17-jdk -y
@@ -38,5 +31,7 @@ runcmd:
   - sudo systemctl start jenkins
   - sudo systemctl enable jenkins
 
-  - git clone https://github.com/mikagouzee/ehealth-terraform.git /home/azureuser/ehealth-iac
-  - git clone https://github.com/mikagouzee/controlplane.git && mv ./controlplane/scripts/subscription_feed.sh subscription.sh && bash subscription.sh
+  - git clone https://github.com/mikagouzee/ehealth-iac.git /home/azureuser/ehealth-iac
+  - git clone https://github.com/mikagouzee/control-plane.git
+  - mv ./controlplane/scripts/ghs.sh ghs.sh
+  - mv ./controlplane/scripts/subscription_feed.sh subscription.sh
