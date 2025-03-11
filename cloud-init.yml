@@ -31,7 +31,8 @@ runcmd:
   - sudo systemctl start jenkins
   - sudo systemctl enable jenkins
 
-  - sudo apt-get install jq -y
   - git clone https://github.com/mikagouzee/ehealth-iac /home/azureuser/ehealth-iac
-  - git clone https://github.com/mikagouzee/control-plane
+  - chown -R azureuser:azureuser /home/azureuser/ehealth-iac/
+  - git clone https://github.com/mikagouzee/control-plane /home/azureuser/control-plane
+  - chown -R azureuser:azureuser /home/azureuser/control-plane/
   - mv ./controlplane/scripts/subscription_feed.sh subscription.sh
