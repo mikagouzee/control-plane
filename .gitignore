@@ -1,5 +1,7 @@
 ./keys/*
-
+./keys\*
+.\keys\*
+.\keys/*
 .terraform.*
 .\terraform*
 .ssh/*
